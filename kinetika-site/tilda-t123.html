@@ -1,0 +1,28 @@
+<!-- Kinetika: вставьте целиком в блок T123. Замените USERNAME на ваш логин GitHub. -->
+<style>
+  html,body{overflow:hidden!important;background:#060509!important}
+  #kinetika-frame{position:fixed;top:0;left:0;width:100vw;height:100vh;height:100dvh;border:0;z-index:9990;background:#060509}
+  .kin-hidden{position:absolute!important;left:-10000px!important;top:0!important;width:1px!important;height:1px!important;overflow:hidden!important}
+</style>
+<iframe id="kinetika-frame" src="https://USERNAME.github.io/kinetika-site/" title="Kinetika" allow="autoplay; fullscreen; clipboard-write" allowfullscreen></iframe>
+<script>
+(function(){
+  function getForm(){ return document.querySelector('form.t-form'); }
+  function hide(){ var f=getForm(); if(f){ var r=f.closest('.r'); (r||f).classList.add('kin-hidden'); } }
+  document.readyState==='loading' ? document.addEventListener('DOMContentLoaded',hide) : hide();
+  window.addEventListener('message', function(e){
+    if(!e.data || e.data.type!=='kinetika-brief') return;
+    if(!/\.github\.io$/.test(new URL(e.origin).hostname)) return;
+    var form=getForm(); if(!form) return;
+    var v=e.data.vals||{};
+    Object.keys(v).forEach(function(k){
+      var el=form.querySelector('[name="'+k+'"]'); if(!el) return;
+      el.value=v[k]||'';
+      el.dispatchEvent(new Event('input',{bubbles:true}));
+      el.dispatchEvent(new Event('change',{bubbles:true}));
+    });
+    var btn=form.querySelector('[type="submit"]');
+    if(btn) btn.click(); else if(form.requestSubmit) form.requestSubmit();
+  });
+})();
+</script>
