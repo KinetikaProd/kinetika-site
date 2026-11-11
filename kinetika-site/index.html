@@ -1350,5 +1350,14 @@ class Component extends DCLogic {
   }
 }
 </script>
+<script>
+// Клики по WhatsApp и телефону передаём странице Тильды, чтобы их видели GTM / GA4 / Google Ads
+document.addEventListener('click', function (e) {
+  var a = e.target.closest && e.target.closest('a[href^="https://wa.me/"], a[href^="tel:"]');
+  if (a && window.parent !== window) {
+    window.parent.postMessage({ type: 'kinetika-click', href: a.href }, '*');
+  }
+}, true);
+</script>
 </body>
 </html>

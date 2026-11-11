@@ -1,15 +1,26 @@
-<!-- Kinetika: вставьте целиком в блок T123. Замените USERNAME на ваш логин GitHub. -->
+<!-- Kinetika: код блока T123 на главной kinetika.kz (вставлять целиком). Актуальная версия от 11.11.2026. -->
 <style>
   html,body{overflow:hidden!important;background:#060509!important}
   #kinetika-frame{position:fixed;top:0;left:0;width:100vw;height:100vh;height:100dvh;border:0;z-index:9990;background:#060509}
   .kin-hidden{position:absolute!important;left:-10000px!important;top:0!important;width:1px!important;height:1px!important;overflow:hidden!important}
 </style>
-<iframe id="kinetika-frame" src="https://USERNAME.github.io/kinetika-site/" title="Kinetika" allow="autoplay; fullscreen; clipboard-write" allowfullscreen></iframe>
+<iframe id="kinetika-frame" src="https://kinetikaprod.github.io/kinetika-site/kinetika-site/" title="Kinetika" allow="autoplay; fullscreen; clipboard-write" allowfullscreen></iframe>
+<script>
+(function(){
+  var f=document.getElementById('kinetika-frame');
+  var h=location.hash||'';
+  if(f && h.indexOf('#/')===0){ f.src='https://kinetikaprod.github.io/kinetika-site/kinetika-site/'+h; }
+})();
+</script>
 <script>
 (function(){
   function getForm(){ return document.querySelector('form.t-form'); }
   function hide(){ var f=getForm(); if(f){ var r=f.closest('.r'); (r||f).classList.add('kin-hidden'); } }
   document.readyState==='loading' ? document.addEventListener('DOMContentLoaded',hide) : hide();
+  function bindSuccess(){ var f=getForm(); if(!f || f.__kinBound) return; f.__kinBound=1;
+    f.addEventListener('tildaform:aftersuccess', function(){ window.dataLayer=window.dataLayer||[]; window.dataLayer.push({event:'submit_form854621090'}); });
+  }
+  document.readyState==='loading' ? document.addEventListener('DOMContentLoaded',bindSuccess) : bindSuccess();
   window.addEventListener('message', function(e){
     if(!e.data || e.data.type!=='kinetika-brief') return;
     if(!/\.github\.io$/.test(new URL(e.origin).hostname)) return;
@@ -23,6 +34,15 @@
     });
     var btn=form.querySelector('[type="submit"]');
     if(btn) btn.click(); else if(form.requestSubmit) form.requestSubmit();
+  });
+  window.addEventListener('message', function(e){
+    if(!e.data || e.data.type!=='kinetika-click' || !e.data.href) return;
+    try{ if(!/\.github\.io$/.test(new URL(e.origin).hostname)) return; }catch(_){ return; }
+    var href=String(e.data.href);
+    if(!/^(https:\/\/wa\.me\/|tel:)/.test(href)) return;
+    var a=document.createElement('a'); a.href=href; a.style.display='none';
+    a.addEventListener('click', function(ev){ ev.preventDefault(); });
+    document.body.appendChild(a); a.click(); setTimeout(function(){ a.remove(); }, 0);
   });
 })();
 </script>
