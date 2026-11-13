@@ -46,6 +46,10 @@
 <meta name="ext-resource-dependency" content="https://i.vimeocdn.com/video/2224069685-b9c848732b10fea761246da68d34ed85f4264fa2319205f1a99ef7dd8bae398f-d_1280?region=us" data-resource-id="w-sapa">
 <meta name="ext-resource-dependency" content="https://i.vimeocdn.com/video/2139834834-1046206b7b7072b568950935e2b47a92e7e6b5f6c867ed2b0f51f2f1bd372262-d_1280?region=us" data-resource-id="w-smartplaza">
 <meta name="ext-resource-dependency" content="assets/kinetika-mask.png" data-resource-id="mask">
+<link rel="preload" as="image" href="assets/backstage/bs-01.webp" fetchpriority="high">
+<link rel="preconnect" href="https://unpkg.com" crossorigin="anonymous">
+<link rel="preload" as="script" href="https://unpkg.com/react@18.3.1/umd/react.production.min.js" integrity="sha384-DGyLxAyjq0f9SPpVevD6IgztCFlnMF6oW/XQGmfe+IsZ8TqEiDrcHkMLKI6fiB/Z" crossorigin="anonymous">
+<link rel="preload" as="script" href="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" integrity="sha384-gTGxhz21lVGYNMcdJOyq01Edg0jhn/c22nsx0kyqP0TxaV5WVdsSH1fSDUf5YJj1" crossorigin="anonymous">
 <script src="./support.js"></script>
 </head>
 <body>
@@ -67,7 +71,6 @@ input,textarea,select,button{font-family:inherit}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 @keyframes playhead{from{left:0}to{left:100%}}
 </style>
-<script src="./image-slot.js"></script>
 </helmet>
 <template id="__bundler_thumbnail" data-bg-color="#0B0A0E"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#0B0A0E"></rect><text x="50" y="64" text-anchor="middle" font-family="sans-serif" font-weight="600" font-size="44" fill="#B497FF">k</text></svg></template>
 <sc-if value="{{ loaderOn }}" hint-placeholder-val="{{ true }}">
@@ -128,7 +131,7 @@ input,textarea,select,button{font-family:inherit}
 <div data-screen-label="01 Главная">
 
 <section aria-labelledby="hero-h" style="position:relative;min-height:max(100svh,720px);display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden;background:#0B0A0E">
-  <sc-if value="{{ heroReady }}" hint-placeholder-val="{{ false }}"><sc-for list="{{ heroSlides }}" as="h" hint-placeholder-count="0"><img src="{{ h.src }}" loading="lazy" alt="" aria-hidden="true" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:{{ h.op }};transform:scale({{ h.sc }});transition:opacity 2.4s ease,transform 9s cubic-bezier(.2,.7,.2,1);filter:brightness(.62) saturate(.85)"></sc-for></sc-if>
+  <sc-if value="{{ heroReady }}" hint-placeholder-val="{{ false }}"><sc-for list="{{ heroSlides }}" as="h" hint-placeholder-count="0"><img src="{{ h.src }}" loading="eager" decoding="async" alt="" aria-hidden="true" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:{{ h.op }};transform:scale({{ h.sc }});transition:opacity 2.4s ease,transform 9s cubic-bezier(.2,.7,.2,1);filter:brightness(.62) saturate(.85)"></sc-for></sc-if>
   <sc-if value="{{ hasVideo }}" hint-placeholder-val="{{ false }}">
     <video ref="{{ videoRef }}" src="{{ heroVideo }}" autoplay="" loop="" playsinline="" preload="auto" aria-hidden="true" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"></video>
   </sc-if>
@@ -956,7 +959,7 @@ const FAQ = [
   { q: 'Как проходит оплата?', a: 'Предоплата перед подготовкой, остаток после сдачи. Работаем с ТОО и ИП, выставляем закрывающие документы.' },
   { q: 'Снимаете рилсы или для частных лиц?', a: 'Нет. Работаем с компаниями и агентствами. Агентствам можем быть продакшн-партнёром под NDA.' },
 ];
-const HERO_SLIDES = ['01','04','06','07'].map(n => 'assets/backstage/bs-' + n + '.jpg');
+const HERO_SLIDES = ['01','04','06','07'].map(n => 'assets/backstage/bs-' + n + '.webp');
 const BS_ALT = ['Свет и команда на площадке','Камера и актёр на площадке','Оператор выставляет кадр','Режиссёр и оператор с актёром','Актёры в кадре за столами','Режиссёр у монитора','Команда следит за дублем','Сцена в павильоне','Режиссёр объясняет сцену актёрам'];
 const BS = Array.from({ length: 18 }, (_, i) => ({ src: 'assets/backstage/bs-' + String(i + 1).padStart(2, '0') + '.jpg', alt: BS_ALT[i] || 'Съёмочная площадка Kinetika' }));
 const BS_ROW1 = [14,4,11,0,6,1,17,13,2].map(i => BS[i]), BS_ROW2 = [16,5,10,3,15,12,7,9,8].map(i => BS[i]);
@@ -969,7 +972,7 @@ const chip = on => ({ on, bg: on ? '#B497FF' : 'transparent', color: on ? '#0B0A
 class Component extends DCLogic {
   state = { route: this.parse(), w: typeof window !== 'undefined' ? window.innerWidth : 1440, scrolled: false, menu: false,
     goal: 'sell', budget: 'any', catBudget: 'any', catGoal: 'all', workCat: 'all', faqOpen: 0,
-    form: { ...EMPTY_FORM }, errors: {}, status: 'idle', vm: {}, player: null, worksAll: false, procIdx: 0, heroIdx: 0, booted: false, loaderGone: false,
+    form: { ...EMPTY_FORM }, errors: {}, status: 'idle', vm: {}, player: null, worksAll: false, procIdx: 0, heroIdx: 0, heroAll: false, booted: false, loaderGone: false,
     procAuto: !(typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) };
 
   reduced = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -1065,6 +1068,8 @@ class Component extends DCLogic {
     document.documentElement.style.overflow = '';
     this.setState({ booted: true });
     this.heroTimer = setInterval(() => this.setState(s => ({ heroIdx: s.heroIdx + 1 })), 5200);
+    const heroAllOn = () => setTimeout(() => this.setState({ heroAll: true }), 1500);
+    if (document.readyState === 'complete') heroAllOn(); else window.addEventListener('load', heroAllOn, { once: true });
     setTimeout(() => { this.rvReady = true; this.revealFlush(); }, this.state.loaderGone ? 0 : 120);
     setTimeout(() => this.setState({ loaderGone: true }), 1000);
   };
@@ -1279,7 +1284,7 @@ class Component extends DCLogic {
       vimeoUrl: p.vimeoUrl ?? 'https://vimeo.com/kinetikaprod',
       heroReady: true,
       loaderOn: (p.showLoader ?? false) && !st.loaderGone,
-      ldRootRef: this.ldRootRef, ldStageRef: this.ldStageRef, ldShadeRef: this.ldShadeRef, ldLineRef: this.ldLineRef, ldPctRef: this.ldPctRef, ldLogoWRef: this.ldLogoWRef, ldLogoCRef: this.ldLogoCRef, heroSlides: (p.heroImage ? [p.heroImage] : HERO_SLIDES).map((src, i, a) => ({ src: RES(src), op: i === st.heroIdx % a.length ? 1 : 0, sc: i === st.heroIdx % a.length && st.booted ? 1 : 1.08 })),
+      ldRootRef: this.ldRootRef, ldStageRef: this.ldStageRef, ldShadeRef: this.ldShadeRef, ldLineRef: this.ldLineRef, ldPctRef: this.ldPctRef, ldLogoWRef: this.ldLogoWRef, ldLogoCRef: this.ldLogoCRef, heroSlides: (p.heroImage ? [p.heroImage] : (st.heroAll ? HERO_SLIDES : HERO_SLIDES.slice(0, 1))).map((src, i, a) => ({ src: RES(src), op: i === st.heroIdx % a.length ? 1 : 0, sc: i === st.heroIdx % a.length && st.booted ? 1 : 1.08 })),
       heroVideo, hasVideo: !!heroVideo && st.videoFailed !== heroVideo, videoRef: this.videoRef,
       slotsOn: (p.showSlots ?? true), slotsText,
       heroFacts: [{ v: '300+', l: 'роликов сняли' }, { v: '8 лет', l: 'в рекламном продакшне' }, { v: 'от 500 тыс. ₸', l: 'бюджет проекта' }, { v: '1–3 недели', l: 'от брифа до ролика' }],
